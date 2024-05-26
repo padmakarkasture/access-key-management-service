@@ -1,24 +1,28 @@
 import { Injectable, ConflictException, NotFoundException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { createClient } from 'redis';
+import { RedisClientType, createClient } from 'redis';
 import { AccessKey, AccessKeyDocument } from '../../schemas/access-key.schema';
 import { CreateAccessKeyDto, UpdateAccessKeyDto } from './dto';
 import { STATUS } from 'src/common/messages';
 
 @Injectable()
 export class AccessKeyService {
-  private redisClient = createClient({
-    password: '*******',
-    socket: {
-        host: 'redis-14536.c305.ap-south-1-1.ec2.redns.redis-cloud.com',
-        port: 14536
-    }
-  });
+  private redisClient: RedisClientType;
 
   constructor(
     @InjectModel(AccessKey.name) private accessKeyModel: Model<AccessKeyDocument>,
-  ) {}
+  ) {
+    this.redisClient=createClient({
+      password: 'CGiUqQlAncPmC80bTvrBsFSZnN09XMYf',
+      socket: {
+          host: 'redis-14536.c305.ap-south-1-1.ec2.redns.redis-cloud.com',
+          port: 14536
+      }
+    });
+    this.redisClient.connect()
+    
+  }
 
   async createAccessKey(createAccessKeyDto: CreateAccessKeyDto): Promise<AccessKey> {
     const { name } = createAccessKeyDto;

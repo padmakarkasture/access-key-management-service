@@ -9,10 +9,10 @@ export class UserPlanController {
   constructor(private readonly accessKeyService: AccessKeyService) {}
 
   @ApiOperation({ summary: 'Get access plan details' })
-  @ApiQuery({ name: 'key', description: 'The access key value' })
+  @ApiQuery({ name: 'name', description: 'The access key value' })
   @ApiResponse({ status: 200, description: 'The access plan details', type: AccessKey })
   @Get()
-  getPlanDetails(@Query('key') name: string): Promise<AccessKey> {
+  getPlanDetails(@Query('name') name: string): Promise<AccessKey> {
     return this.accessKeyService.getPlanDetails(name);
   }
 
