@@ -21,9 +21,9 @@ export class AccessKeyService {
   ) {}
 
   async createAccessKey(createAccessKeyDto: CreateAccessKeyDto): Promise<AccessKey> {
-    const { keyValue } = createAccessKeyDto;
+    const { name } = createAccessKeyDto;
     try {
-      const existingKey = await this.accessKeyModel.findOne({ keyValue }).exec();
+      const existingKey = await this.accessKeyModel.findOne({ name }).exec();
       if (existingKey) {
         throw new ConflictException('Access key already exists');
       }
@@ -38,6 +38,7 @@ export class AccessKeyService {
 
       return createdAccessKey;
     } catch (error) {
+      console.log("error",error)
       if (error instanceof ConflictException) {
         throw error;
       } else {
@@ -54,9 +55,9 @@ export class AccessKeyService {
     }
   }
 
-  async updateAccessKey(id: string, updateAccessKeyDto: UpdateAccessKeyDto): Promise<AccessKey> {
+  async updateAccessKey(name: string, updateAccessKeyDto: UpdateAccessKeyDto): Promise<AccessKey> {
     try {
-      const updatedAccessKey = await this.accessKeyModel.findByIdAndUpdate(id, updateAccessKeyDto, { new: true }).exec();
+      const updatedAccessKey = await this.accessKeyModel.findOneAndUpdate({name}, updateAccessKeyDto, { new: true }).exec();
       if (!updatedAccessKey) {
         throw new NotFoundException('Access key not found');
       }
@@ -77,9 +78,9 @@ export class AccessKeyService {
     }
   }
 
-  async removeAccessKey(id: string): Promise<void> {
+  async removeAccessKey(name: string): Promise<any> {
     try {
-      const result = await this.accessKeyModel.findByIdAndDelete(id).exec();
+      const result = await this.accessKeyModel.findOneAndDelete({name}).exec();
       if (!result) {
         throw new NotFoundException('Access key not found');
       }
@@ -89,6 +90,7 @@ export class AccessKeyService {
       //   event: 'key_deleted',
       //   data: { id },
       // }));
+      return {message:"deleted Succesfully"}
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -98,9 +100,9 @@ export class AccessKeyService {
     }
   }
 
-  async getPlanDetails(keyValue: string): Promise<AccessKey> {
+  async getPlanDetails(name: string): Promise<AccessKey> {
     try {
-      const accessKey = await this.accessKeyModel.findById(keyValue).exec();
+      const accessKey = await this.accessKeyModel.findOne({name}).exec();
       if (!accessKey) {
         throw new NotFoundException('Access key not found');
       }
@@ -114,9 +116,9 @@ export class AccessKeyService {
     }
   }
 
-  async disableKey(keyValue: string): Promise<void> {
+  async disableKey(name: string): Promise<AccessKey> {
     try {
-      const result = await this.accessKeyModel.findByIdAndUpdate(keyValue, { status: STATUS.DISABLED }).exec();
+      const result = await this.accessKeyModel.findOneAndUpdate({name}, { status: STATUS.DISABLED }).exec();
       if (!result) {
         throw new NotFoundException('Access key not found');
       }
@@ -124,8 +126,9 @@ export class AccessKeyService {
       // Uncomment to enable Redis events
       // this.redisClient.publish('key-events', JSON.stringify({
       //   event: 'key_disabled',
-      //   data: { keyValue },
+      //   data: { name },
       // }));
+      return result
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;

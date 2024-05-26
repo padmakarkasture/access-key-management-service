@@ -12,16 +12,15 @@ export class UserPlanController {
   @ApiQuery({ name: 'key', description: 'The access key value' })
   @ApiResponse({ status: 200, description: 'The access plan details', type: AccessKey })
   @Get()
-  getPlanDetails(@Query('key') keyValue: string): Promise<AccessKey> {
-    return this.accessKeyService.getPlanDetails(keyValue);
+  getPlanDetails(@Query('key') name: string): Promise<AccessKey> {
+    return this.accessKeyService.getPlanDetails(name);
   }
 
   @ApiOperation({ summary: 'Disable an access key' })
-  @ApiParam({ name: 'keyValue', description: 'The access key value' })
+  @ApiParam({ name: 'name', description: 'The access key value' })
   @ApiResponse({ status: 204, description: 'The access key has been successfully disabled.' })
-  @Post(':keyValue/disable')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  disableKey(@Param('keyValue') keyValue: string): Promise<void> {
-    return this.accessKeyService.disableKey(keyValue);
+  @Post(':name/disable')
+  disableKey(@Param('name') name: string): Promise<AccessKey> {
+    return this.accessKeyService.disableKey(name);
   }
 }

@@ -6,7 +6,7 @@ export type AccessKeyDocument = AccessKey & Document;
 @Schema()
 export class AccessKey {
   @Prop({ unique: true, required: true })
-  keyValue: string;
+  name: string;
 
   @Prop({ required: true })
   rateLimit: number;

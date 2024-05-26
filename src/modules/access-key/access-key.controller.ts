@@ -27,19 +27,19 @@ export class AccessKeyController {
   }
 
   @ApiOperation({ summary: 'Delete an access key' })
-  @ApiParam({ name: 'id', description: 'The ID of the access key' })
+  @ApiParam({ name: 'name', description: 'The name of the access key' })
   @ApiResponse({ status: 204, description: 'The access key has been successfully deleted.' })
-  @Delete(':id')
+  @Delete(':name')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string): Promise<void> {
-    return this.accessKeyService.removeAccessKey(id);
+  remove(@Param('name') name: string): Promise<any> {
+    return this.accessKeyService.removeAccessKey(name);
   }
 
   @ApiOperation({ summary: 'Update an access key' })
-  @ApiParam({ name: 'id', description: 'The ID of the access key' })
+  @ApiParam({ name: 'name', description: 'The name of the access key' })
   @ApiResponse({ status: 200, description: 'The access key has been successfully updated.', type: AccessKey })
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateAccessKeyDto: UpdateAccessKeyDto): Promise<AccessKey> {
-    return this.accessKeyService.updateAccessKey(id, updateAccessKeyDto);
+  @Put(':name')
+  update(@Param('name') name: string, @Body() updateAccessKeyDto: UpdateAccessKeyDto): Promise<AccessKey> {
+    return this.accessKeyService.updateAccessKey(name, updateAccessKeyDto);
   }
 }
